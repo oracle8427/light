@@ -3,6 +3,7 @@ package kr.pe.light.web;
 import kr.pe.light.TestHelper;
 
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,5 +39,26 @@ public class HelloControllerTest extends TestHelper {
         mockMvc.perform(MockMvcRequestBuilders.get("/hello"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(hello));
+    }
+
+    /*
+     *
+     * MockMvcRequestBuilders.param
+     *  API 테스트할 때 사용될 요청 파라미터를 설정한다.
+     *  String 타입만 가능하므로, 문자열로 변환 해야한다.
+     *
+     * MockMvcResultMatchers.jsonPath
+     *  JSON 응답값을 필드별로 검증할 수 있는 메소드
+     *  "$"를 기준으로 필드명을 명시한다.
+     *  $.name, $.amount
+     * */
+    @Test
+    public void helloDtoTest() throws Exception {
+        String name = "hello";
+        int amount = 1000;
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/hello/dto").param("name", name).param("amount", String.valueOf(amount)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(name)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.amount", Matchers.is(amount)));
     }
 }
